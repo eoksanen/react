@@ -8,20 +8,42 @@ const Button = ({handler, text}) => {
   )
 }
 
-const Header = ({text}) => {
+const Header = ({text}) => <h1>{text}</h1>
+
+const Display = ({disp}) => <div>{disp}</div>
+
+const StatisticLine = ({text, value}) => {
   return (
-    <h1>{text}</h1>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>   
   )
 }
 
-const Display = ({disp}) => {
-  return (
-  <div>{disp}</div>
-  )
+const ShowAverage = ({good, neutral, bad}) => {
+  if(good !== 0 || neutral !== 0 || bad !== 0){
+    return (
+<div>{average(good, neutral, bad)}</div>
+    )}
+    else {
+      return (<div>0%</div>)
+    }
 }
 
+const ShowPositive = ({good, neutral, bad}) => {
+  if(good !== 0 || neutral !== 0 || bad !== 0){
+    return (
+   <div>{positive(good, neutral, bad)}%</div>   
+    )}
+    else{
+      return (<div>0%</div>)
+    }   
+}
+
+
+//** */
 const Calc = ({good, neutral, bad, sw}) => {
-  console.log(sw)
   switch(sw){
   case 0:
     return (
@@ -30,13 +52,13 @@ const Calc = ({good, neutral, bad, sw}) => {
   break;
   case 1:
     return (
-      (good + neutral + bad)/3
+      <div>{average(good, neutral, bad)}</div>
     )
   break;
   case 2:
     if(good !== 0 || neutral !== 0 || bad !== 0){
     return (
-      <div>{(good/(good + neutral + bad))*100}%</div>
+      <div>{positive(good, neutral, bad)}%</div>
     )}
     else{
       return( <div>0%</div>
@@ -48,7 +70,6 @@ const Calc = ({good, neutral, bad, sw}) => {
   }
 
   const CalcDisplay = ({good, neutral, bad, sw}) => {
-    console.log(sw)
 
    if(sw === 0) {
   return (
@@ -58,7 +79,7 @@ const Calc = ({good, neutral, bad, sw}) => {
   else if(sw === 'average'){
     if(good !== 0 || neutral !== 0 || bad !== 0){
   return(
-    <div>{(good*1 + neutral*0 + bad*-1)/(good + neutral + bad)}</div>
+    <div>{average(good, neutral, bad)}</div>
   )}
     else{
       return( 
@@ -68,11 +89,13 @@ const Calc = ({good, neutral, bad, sw}) => {
   }
     else{
   return(
-    <div>{(good/(good + neutral + bad))*100}</div>
+    <div>{positive(good, neutral, bad)}%</div>
   )}}
+//*** */
 
 
 const Stats = ({good, neutral, bad}) => {
+  const [sw, setSwitch] = useState(0)
   return (
     <table>
       <tbody>
@@ -100,10 +123,34 @@ const Stats = ({good, neutral, bad}) => {
         <td>positive</td>
         <td><Calc good={good} neutral={neutral} bad={bad} sw={2} /></td>
       </tr>
+      <tr>
+        <td>average2</td>
+        <td><ShowAverage good={good} neutral={neutral} bad={bad} /></td>
+      </tr>
+      <tr>
+        <td>positive2</td>
+        <td><ShowPositive good={good} neutral={neutral} bad={bad} /></td>
+      </tr>
+      <Header text='statistics' />
+      <StatisticLine text='good' value={good} />
+      <StatisticLine text='neutral' value={neutral} />
+      <StatisticLine text='bad' value={bad} />
+      <StatisticLine text='all' value={good + neutral + bad} />
+      <StatisticLine text='average' value={average(good, neutral, bad)} />
+      <StatisticLine text='positive' value={positive(good, neutral, bad)} />
+
       </tbody>
     </table>
   )
 
+}
+const Anecdots = (props) => {
+  return(
+    <div>
+      <br></br>
+      {anecdotes[props.selected]}
+    </div>
+  )
 }
 
 const anecdotes = [
@@ -115,12 +162,39 @@ const anecdotes = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
+const average = (good, neutral, bad) =>{
+  if(good !== 0 || neutral !== 0 || bad !== 0){
+    return (
+      <div>{(good*1 + neutral*0 + bad*-1)/(good + neutral + bad)}%</div>
+    )}
+    else{
+      return( <div>0%</div> )}
+} 
+const positive = (good, neutral, bad) => {
+if(good !== 0 || neutral !== 0 || bad !== 0){
+  return (
+    <div>{((good/(good + neutral + bad))*100)}%</div>
+  )}
+  else{
+    return( <div>0%</div> )}
+  }
+
+  const vote = new Uint8Array(6); 
+
+  const handleClicked =(selected) =>{
+
+    //console.log(vote, selected)
+  }
+
 function App() {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-
+  const [selected, setSelected] = useState(Math.floor(Math.random() * 5))
+  //setSelected(Math.floor(Math.random() * 5))
+  //setSelected(4)
+  
   
 
   return (
@@ -133,7 +207,29 @@ function App() {
       <Header text='statistics' />
 
       <Stats good={good} neutral={neutral} bad={bad} />
+      <br></br>
+      
+
+
+      <Button handler={()=>setSelected(Math.floor(Math.random() * 5))} text='Next anecdote' />
+      <Button handler={()=>console.log(selected)} text='vote' />
+      
+      <Anecdots selected={selected} />
+
+      <Header text='statistics' />
+
+      <table>
+        <tbody>
+          <StatisticLine text='good' value={good} />
+          <StatisticLine text='neutral' value={neutral} />
+          <StatisticLine text='bad' value={bad} />
+          <StatisticLine text='all' value={good + neutral + bad} />
+          <StatisticLine text='average' value={average(good, neutral, bad)} />
+          <StatisticLine text='positive' value={positive(good, neutral, bad)} />
+        </tbody>
+      </table>
     </div>
+
   )
 }
 
