@@ -178,12 +178,125 @@ if(good !== 0 || neutral !== 0 || bad !== 0){
   else{
     return( <div>0%</div> )}
   }
+  
+  
+  const Vote =({vt}) =>{
+    const points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 }
+    const [votes, setVotes] = useState(points)
 
-  const vote = new Uint8Array(6); 
+    console.log('---------------------')
+    console.log('vt', vt)
+    console.log('votes', votes)
+    const vote = () =>{
+      const copy = { ...votes}
+      copy[vt] +=1
+     // let tmp = copy[vt]
+     // tmp +=1
+    //  copy[vt] = tmp
+      setVotes({...copy})
+    }
+    return (
+      <>
+        has {votes[vt]} votes<br></br>
+        <Button handler={vote} text='vote' />
+ 
+      </>
+    );
+  }
 
-  const handleClicked =(selected) =>{
+  const Vote2 =({vt}) =>{
+    const [votes2, setVotes2] = useState(new Uint8Array(5))
 
-    //console.log(vote, selected)
+    console.log('---------------------')
+    console.log('vt', vt)
+    console.log('votes', votes2)
+    const vote2 = () =>{
+      const copy2 = [ ...votes2]
+      copy2[vt] +=1
+     // let tmp = copy[vt]
+     // tmp +=1
+    //  copy[vt] = tmp
+      setVotes2([...copy2])
+    }
+    return (
+      <>
+        has {votes2[vt]} votes<br></br>
+        <Button handler={vote2} text='vote' />
+ 
+      </>
+    );
+  }
+
+  function RandomList() {
+    const [items, setItems] = useState(new Uint8Array());
+  
+    const addItem = () => {
+      setItems([
+        ...items,
+        {
+          id: items.length,
+          value: Math.random() * 100
+        }
+      ]);
+      console.log(items)
+    };
+  
+    return (
+      <>
+        <button onClick={addItem}>Add a number</button>
+        <ul>
+          {items.map(item => (
+            <li key={item.id}>{item.value}</li>
+          ))}
+        </ul>
+      </>
+    );
+  }
+
+  function LoginForm() {
+    const [form, setState] = useState({
+      username: '',
+      password: ''
+    });
+  
+    const printValues = e => {
+      e.preventDefault();
+      console.log(form.username, form.password);
+    };
+  
+    const updateField = e => {
+      console.log(form)
+      setState({
+        ...form,
+        [e.target.name]: e.target.value
+      });
+     // console.log(form.username, form.password);
+    };
+  
+    return (
+      <form onSubmit={printValues}>
+        <label>
+          Username:
+          <input
+            value={form.username}
+            name="username"
+            onChange={updateField}
+          />
+        </label>
+        <br />
+        <label>
+          Password:
+          <input
+            value={form.password}
+            name="password"
+            type="password"
+            onChange={updateField}
+          />
+        </label>
+        <br />
+        <button>Submit</button>
+      </form>
+    );
   }
 
 function App() {
@@ -211,10 +324,13 @@ function App() {
       
 
 
-      <Button handler={()=>setSelected(Math.floor(Math.random() * 5))} text='Next anecdote' />
-      <Button handler={()=>console.log(selected)} text='vote' />
+      
+      
+
       
       <Anecdots selected={selected} />
+      <Vote vt={selected} />
+      <Button handler={()=>setSelected(Math.floor(Math.random() * 5))} text='Next anecdote' />
 
       <Header text='statistics' />
 
@@ -228,6 +344,12 @@ function App() {
           <StatisticLine text='positive' value={positive(good, neutral, bad)} />
         </tbody>
       </table>
+
+      <Anecdots selected={selected} />
+      <Vote2 vt={selected} />
+      <Button handler={()=>setSelected(Math.floor(Math.random() * 5))} text='Next anecdote' />
+      <RandomList />
+      <LoginForm />
     </div>
 
   )
