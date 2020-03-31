@@ -1,7 +1,5 @@
 import React from 'react';
-import Header from './Header'
-import Content from './Content'
-import Total from './Total'
+
 
 const Course = ({course}) => {
     console.log(course.parts)
@@ -9,8 +7,33 @@ const Course = ({course}) => {
         <div>
             <Header name={course.name} />
             <Content parts={course.parts} />
-            <Total parts={course.parts} />
         </div>
+    )
+}
+
+const Header = ({name}) => {
+    return (
+    <h1>{name}</h1>
+    )
+}
+
+const Content = ({parts}) => {
+    const total = parts.reduce((s, p) => console.log(s, p) || s + p.exercises, 0)
+    return (
+        <ul>
+                {parts.map((part, i) => 
+                <Part key={i} part={part} />
+                )}
+
+            <div>total of {total} exercises</div>
+        </ul>
+
+    )
+}
+
+const Part = ({part}) => {
+    return (
+    <li>{part.name} {part.exercises}</li>
     )
 }
 

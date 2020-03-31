@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Note from './components/Note'
 import Courses from './components/Courses'
