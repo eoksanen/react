@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Contact from './components/Contact'
+import AddContact from './components/AddContact'
+import ShowContacts from './components/ShowContacts'
+import Filter from './components/Filter'
 
 function App() {
   const [ persons, setPersons] = useState([
@@ -20,11 +22,6 @@ function App() {
       name: newName,
       number: newNumber
     }
-    console.log(newName)
-    console.log(persons.includes(newName))
-    persons.map(person => {
-      console.log(person.name ===newName)
-    })
     
     if(persons.map(person => {return person.name}).indexOf(newName) < 0)
     {
@@ -49,60 +46,20 @@ function App() {
     console.log('filter: ',event.target.value)
     setFilter(event.target.value)
   }
+  const filteredContacts =() => {
+    return (
+    persons.filter(fl => {return fl.name.toLowerCase().includes(filter.toLowerCase())})
+    )
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        Filter: <input value={filter} onChange={handleFilter} />
-      </form>
+      <Filter filter={filter} handleFilter={handleFilter} />
       <h2>add new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input type='text' value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <button type="submit">add</button>
-      </form>
+      <AddContact addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>
-              Name:
-            </td>
-            <td>
-              Number:
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-        {persons.map((person, i) => 
-          <Contact key={i} person={person} />
-        )}
-        </tbody>
-      </table> 
-      <h2>Filtered contacts</h2>
-      <table>
-        <thead>
-          <tr>
-            <td>
-              Name:
-            </td>
-            <td>
-              Number:
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-        {
-        persons.filter(fl => {return fl.name.toLowerCase().includes(filter.toLowerCase())}).map((person, i) => 
-          <Contact key={i} person={person} />
-        )}
-        </tbody>
-      </table>   
+      <ShowContacts filteredContacts={filteredContacts} />
     </div>
   )
 }
