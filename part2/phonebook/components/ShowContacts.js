@@ -1,7 +1,7 @@
 import React from 'react'
 import Contact from './Contact'
 
-const ShowContacts = ({filteredContacts}) => {
+const ShowContacts = ({filteredContacts, deletePersonOf}) => {
     return(
         <table>
         <thead>
@@ -16,7 +16,9 @@ const ShowContacts = ({filteredContacts}) => {
         </thead>
         <tbody>
         {filteredContacts().map((person, i) => 
-          <Contact key={i} person={person} />
+          <Contact key={i} person={person} 
+          deleteContact={()=>deletePersonOf(person.id)}
+          />
         )}
         </tbody>
       </table> 
