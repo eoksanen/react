@@ -3,7 +3,7 @@ import Contact from './Contact'
 
 const ShowContacts = ({filteredContacts, deletePersonOf}) => {
     return(
-        <table>
+        <table className = 'listOfContacts'>
         <thead>
           <tr>
             <td>
